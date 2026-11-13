@@ -19,7 +19,6 @@ import {
 import { getBundle } from "@/lib/bundles";
 import { brand } from "@/lib/brand";
 import { isPaidStatus } from "@/lib/pix-status";
-import { getCardTransaction, isCardOrderId, CARD_ORDER_PREFIX } from "@/lib/hypercash.server";
 import { fetchPixStatus } from "@/lib/pix-gateway.server";
 import { needsUtmifyRetry, type PaidOrderReport } from "@/lib/utmify-retry";
 
@@ -185,10 +184,10 @@ export { isPaidStatus };
 
 /** Consulta o status real no gateway. */
 export async function fetchGatewayStatus(id: string): Promise<{ status: string; amount: number }> {
-  if (isCardOrderId(id)) {
-    const tx = await getCardTransaction(id.slice(CARD_ORDER_PREFIX.length));
-    // HyperCash já devolve o valor em centavos.
-    return { status: tx?.status ?? "processing", amount: tx?.amount ?? 0 };
+  if (id.startsWith("hc_")) {
+    // Pedidos antigos da HyperCash (removida): só o status já gravado no banco.
+    const o = await getOrder(id);
+    return { status: o?.status ?? "processing", amount: o?.amount_cents ?? 0 };
   }
   // Pix: Umbrella ("um_"), SagacePay ("sg_"), PayShark ("ps_"), Koku ("ko_") ou PixGate (sem prefixo).
   return fetchPixStatus(id);
