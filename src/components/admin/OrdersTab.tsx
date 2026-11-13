@@ -10,7 +10,11 @@ import {
   Receipt,
   Search,
 } from "lucide-react";
-import { getAdminOrders, type AdminOrder } from "@/lib/admin.functions";
+import {
+  getAdminOrders,
+  getComprovanteAdmin,
+  type AdminOrder,
+} from "@/lib/admin.functions";
 import {
   brlCents,
   brlCompacto,
@@ -618,6 +622,8 @@ function OrderDetails({
 
         {c.qrcode && <PixCode code={c.qrcode} paid={isPaid(o)} />}
 
+        <ComprovantesList order={o} password={password} />
+
         <div>
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-[#98a2b3]">
@@ -789,6 +795,50 @@ function OrderLink({
       <StatusPill status={x.status} />
       <span className="shrink-0 tabular-nums text-[#101828]">{brlCents(x.amount_cents)}</span>
     </button>
+  );
+}
+
+/** Comprovantes de Pix que o cliente enviou pela página do pedido. */
+function ComprovantesList({ order: o, password }: { order: AdminOrder; password: string }) {
+  const abrir = useServerFn(getComprovanteAdmin);
+  const [erro, setErro] = useState("");
+  const lista = o.comprovantes ?? [];
+  if (lista.length === 0) return null;
+
+  const ver = async (path: string) => {
+    setErro("");
+    try {
+      const { url } = await abrir({ data: { password, path } });
+      window.open(url, "_blank", "noopener");
+    } catch {
+      setErro("Não consegui abrir o comprovante.");
+    }
+  };
+
+  return (
+    <Section title="Comprovante do Pix">
+      <ul className="space-y-2">
+        {lista.map((c) => (
+          <li
+            key={c.path}
+            className="flex items-center justify-between gap-3 rounded-lg border border-[#eef0f3] p-3"
+          >
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-[#101828]">{c.name}</p>
+              <p className="text-xs text-[#667085]">{fmtDateTime(c.uploaded_at)}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => ver(c.path)}
+              className="shrink-0 rounded-lg border border-[#d0d5dd] bg-white px-3 py-1.5 text-[13px] font-medium text-[#344054] hover:bg-[#f9fafb]"
+            >
+              Abrir
+            </button>
+          </li>
+        ))}
+      </ul>
+      {erro && <p className="mt-2 text-xs text-red-600">{erro}</p>}
+    </Section>
   );
 }
 
