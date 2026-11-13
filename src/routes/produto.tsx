@@ -391,7 +391,9 @@ function Page() {
                   {pixPrice > 0 && pay.card && " ou "}
                   {pay.card && (
                     <>
-                      {pay.installments}x de {installment(priced.price, pay.installments)} no cartão
+                      {pay.installments > 1
+                        ? `${pay.installments}x de ${installment(priced.price, pay.installments)} no cartão`
+                        : `${brl(priced.price)} no cartão`}
                     </>
                   )}
                 </p>

@@ -6,7 +6,7 @@ export const FAQ: readonly { q: string; a: string }[] = [
   ...FAQ_KIT,
   {
     q: "Quais as formas de pagamento?",
-    a: `Pix e cartão de crédito em até ${CARD_MAX_INSTALLMENTS}x, quando o cartão estiver disponível na loja. Nesse caso o Pix tem ${Math.round(PIX_DISCOUNT * 100)}% de desconto.`,
+    a: `Pix e cartão de crédito ${CARD_MAX_INSTALLMENTS > 1 ? `em até ${CARD_MAX_INSTALLMENTS}x` : "à vista"}, quando o cartão estiver disponível na loja. Nesse caso o Pix tem ${Math.round(PIX_DISCOUNT * 100)}% de desconto.`,
   },
   {
     q: "Como acompanho meu pedido?",

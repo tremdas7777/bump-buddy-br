@@ -72,7 +72,9 @@ export function ProductCard({ p, priority = false }: { p: Bundle; priority?: boo
         ) : (
           pay.card && (
             <p className="mt-0.5 text-[12px] text-[var(--ink)]">
-              ou {pay.installments}x de {installment(p.price, pay.installments)}
+              {pay.installments > 1
+                ? `ou ${pay.installments}x de ${installment(p.price, pay.installments)}`
+                : `ou ${brl(p.price)} no cartão`}
             </p>
           )
         )}

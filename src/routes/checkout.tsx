@@ -180,7 +180,7 @@ function Page() {
       );
       return on ? [...rest, id] : rest;
     });
-  // Pix vem pré-selecionado (10% de desconto); cartão em até 12x pelo preço de tabela.
+  // Cartão só à vista, pelo preço de tabela.
   const [pay, setPay] = useState<"pix" | "card" | null>(null);
   const [card, setCard] = useState({ number: "", name: "", exp: "", cvv: "" });
   const [installments, setInstallments] = useState(1);
@@ -869,22 +869,28 @@ function Page() {
                       }
                     />
                   </div>
-                  <label className="block">
-                    <span className="mb-2 block text-[13px] font-medium">Parcelas</span>
-                    <select
-                      value={installments}
-                      onChange={(e) => setInstallments(Number(e.target.value))}
-                      className="ck-surface h-[46px] w-full rounded-lg border border-border px-3 text-base outline-none focus-visible:border-foreground md:text-[13px]"
-                    >
-                      {Array.from({ length: CARD_MAX_INSTALLMENTS }, (_, i) => i + 1).map((n) => (
-                        <option key={n} value={n}>
-                          {n === 1
-                            ? `1x de ${brl(cardTotal)} à vista`
-                            : `${n}x de ${brl(cardTotal / n)} sem juros`}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  {CARD_MAX_INSTALLMENTS > 1 ? (
+                    <label className="block">
+                      <span className="mb-2 block text-[13px] font-medium">Parcelas</span>
+                      <select
+                        value={installments}
+                        onChange={(e) => setInstallments(Number(e.target.value))}
+                        className="ck-surface h-[46px] w-full rounded-lg border border-border px-3 text-base outline-none focus-visible:border-foreground md:text-[13px]"
+                      >
+                        {Array.from({ length: CARD_MAX_INSTALLMENTS }, (_, i) => i + 1).map((n) => (
+                          <option key={n} value={n}>
+                            {n === 1
+                              ? `1x de ${brl(cardTotal)} à vista`
+                              : `${n}x de ${brl(cardTotal / n)} sem juros`}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ) : (
+                    <p className="text-[13px] text-muted-foreground">
+                      Pagamento à vista: <b className="text-foreground">{brl(cardTotal)}</b>
+                    </p>
+                  )}
                   {pixDiscountOn && (
                     <p className="rounded-md bg-[var(--ck-badge)]/50 px-3 py-2 text-[12px] text-muted-foreground">
                       No Pix sai por <b className="text-[var(--ck-ok)]">{brl(pixTotal)}</b> (

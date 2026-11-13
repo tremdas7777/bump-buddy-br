@@ -158,7 +158,13 @@ export function Footer() {
           <div className="flex flex-wrap gap-2">
             {[
               "Pix",
-              ...(settings?.cardEnabled ? [`Cartão em até ${CARD_MAX_INSTALLMENTS}x`] : []),
+              ...(settings?.cardEnabled
+                ? [
+                    CARD_MAX_INSTALLMENTS > 1
+                      ? `Cartão em até ${CARD_MAX_INSTALLMENTS}x`
+                      : "Cartão à vista",
+                  ]
+                : []),
               "Compra segura",
             ].map((t) => (
               <span
