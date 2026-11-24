@@ -5,7 +5,7 @@
 export const brand = {
   name: "BUMP BUDDY",
   /** Endereço oficial da loja (o www redireciona para cá). */
-  siteUrl: "https://bumpbuddy.store",
+  siteUrl: "https://bumpbuddy.site",
   /** Linha pequena embaixo do nome no logo. */
   logoTagline: "Carrinho bate-bate infantil",
   productName: "Carrinho Bate-Bate Elétrico Infantil",
